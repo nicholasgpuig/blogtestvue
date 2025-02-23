@@ -1,9 +1,31 @@
 <script setup>
     import PostList from '../components/PostList.vue';
+    import { useRoute } from "vue-router";
+    import { useQuery } from "@vue/apollo-composable";
+    import gql from "graphql-tag";
 
-    const { result, loading, error } = {
-        error: { message: 'No connection to GraphQL API yet' },
-    };
+    const route = useRoute();
+    const username = route.params.username;
+    // postSet comes from author being foreign key in Post model
+    const { result, loading, error } = useQuery(gql`
+    query {
+        authorByUsername(
+        username: "${username}"
+        ) {
+            website
+            bio
+            user {
+            firstName 
+            lastName
+            username
+            }
+            postSet {
+            title
+            slug
+            }
+        }
+    }
+    `);
 </script>
 
 <template>
